@@ -4,16 +4,15 @@ library(data.table)
 dat<-c()
 
 for(i in 1:length(fi)){
-  tem<-read.table(paste0("./dcdata/",fi[1]),stringsAsFactors = F, fileEncoding = "cp949",sep= ",")
+  tem<-read.table(paste0("./dcdata/",fi[i]),stringsAsFactors = F, fileEncoding = "cp949",sep= ",")
+  if(nrow(tem)!=1){
   tem<-unlist(tem[-grep("^\\[[0-9].*\\]$",tem[,1]),1])
-  tit<-strsplit(fi[1],"_")[[1]]
-  tit<-tit[length(tit)]
-  tit<-gsub(".csv","",tit)
+  tit<-gsub(".csv","",fi[i])
   tem<-data.frame(tit,tem,stringsAsFactors = F)
   dat<-rbind(dat,tem)
   print(paste0(i," / ",length(fi)))
-}
-
+}}
+a
 head(dat)
 library(KoNLP)
 library(data.table)
@@ -23,6 +22,7 @@ data<-dat[,c(1,2)]
 rm(dat)
 data[,1]<-as.factor(data[,1])
 data<-data[data$tem!="x",]
+data<-data[nchar(data$tem)>10,]
 
 data[,1]<-as.factor(data[,1])
 write.table(levels(data[,1]),"classes.txt",row.names = F,col.names = F,quote = F)
